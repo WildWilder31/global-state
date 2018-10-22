@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import TodoList from './TodoList';
+import TodoStats from './TodoStats';
 import TodoForm from './TodoForm';
 import todos from './data/todos.json';
 
@@ -14,6 +15,29 @@ class App extends Component {
     }
   }
 
+
+  // Reçoit un id de todo
+  toggleCompleted = todoId => {
+    // 1. Retrouver le todo concerné dans this.state.todos par son id
+    // find permet de trouver l'élément lui-même selon un critère (fonction)
+    // findIndex même chose mais renvoie l'index dans le tableau
+    // const todoIndex = this.state.todos.findIndex(todo => todo.id === todoId);
+    // const todo = this.state.todos[todoIndex];
+    // // const todos = this.state.todos.slice(); // ES5
+    // const todos = [...this.state.todos]; // ES6 spread operator
+    // todos.splice(todoIndex, 1, { ...todo, completed: !todo.completed });
+
+    // 2. map
+    const todos = this.state.todos.map(
+      todo => todo.id !== todoId
+      ? todo
+      : { ...todo, completed: !todo.completed } // Object.assign(todo, { completed: !todo.completed })
+    );
+
+    this.setState({
+        todos: todos
+    });
+  }
   addTodo = title => {
     const todo = {
       completed: false,
@@ -35,7 +59,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <TodoList todos={this.state.todos} />
+        <TodoStats todos={this.state.todos} />
+        <TodoList
+          todos={this.state.todos}
+          toggleCompleted={this.toggleCompleted}
+        />
         <TodoForm addTodo={this.addTodo} />
       </div>
     );
